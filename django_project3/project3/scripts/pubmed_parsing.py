@@ -92,7 +92,7 @@ def download_pubmed(query,num,batch_size) :
     return
 
 query = "enterovirus"
-num = 1200
+num = 10
 batch_size = 5
 
 download_pubmed(query, num, batch_size)

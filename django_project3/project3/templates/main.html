@@ -1,0 +1,36 @@
+
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Main Page</title>
+    {% load static %}
+    
+</head>
+<body>
+    <h1>Top K frequency words::</h1>
+    <ul>
+        {% for word in top_k_words %}
+            <li>{{ word }}</li>  <!-- Display each filtered word in a list -->
+        {% endfor %}
+    </ul>
+    <h1>Similarity between two words:</h1>
+    <form id="similarity-form">
+        <label for="word1">First Word:</label>
+        <input type="text" id="word1" placeholder="Enter first word" required>
+
+        <label for="word2">Second Word:</label>
+        <input type="text" id="word2" placeholder="Enter second word" required>
+        <button id="check-similarity-button" type="button" onclick="checkSimilarity()">Check Similarity</button>
+        <button id="predict-middle-button" type="button" onclick="predictCBOW()">Predict</button>
+        <button id="predict-similar-button" type="button" onclick="predictSG()">Similar Words</button>
+    </form>
+
+    <div id="similarity-score">Similarity score:</div>
+    <div id="middle-word">Middle word:</div>
+    <div id="similar-word">Similar words:</div>
+    <script src="{% static 'js/main.js' %}"></script>
+
+</body>
+</html>

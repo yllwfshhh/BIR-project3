@@ -2,13 +2,11 @@ import xml.etree.ElementTree as ET
 import os
 import re
 import sqlite3
-import matplotlib.pyplot as plt
 import nltk
 from nltk.corpus import stopwords
 from nltk.stem import PorterStemmer
 from nltk.tokenize import sent_tokenize
-from PIL import Image
-from wordcloud import WordCloud
+
 # nltk.download('punkt_tab')
 # nltk.download('stopwords')
 
@@ -92,6 +90,7 @@ def insert_to_db(db_name, articles):
     conn.close()
 
 ### Get Data
+
 def get_abstract_sentences(db_name,tag):
     conn = sqlite3.connect(db_name)
     c = conn.cursor()
@@ -117,15 +116,40 @@ def get_abstract_sentences(db_name,tag):
 
     return abstract_sentences
 
+def get_all_words(db_name,tag):
+    conn = sqlite3.connect(db_name)
+    c = conn.cursor()
+    if tag:
+        query  = '''
+        SELECT abstract FROM pubmed_articles
+        WHERE tag LIKE ?
+        '''
+        c.execute(query, ('%' + tag + '%',))
+    else:
+        query = "SELECT abstract FROM pubmed_articles"  # Get all abstracts
+        c.execute(query)
+    
+    abstracts = c.fetchall() 
+    conn.close()
+
+    # put all abstracts into one string
+    all_text = " ".join([abstract[0] for abstract in abstracts if abstract[0] is not None])
+    tokens = nltk.word_tokenize(all_text)
+    words = [word.lower() for word in tokens if word.isalpha()] # normalize and filter
+    stop_words = set(stopwords.words('english'))
+    filtered_words = [word for word in words if word not in stop_words] # Filter out stop words from the word list
+
+    return filtered_words
+
 
 if __name__ == "__main__":
 
-    dir = "../data/"  
-    db_name = "../pubmed.db"
-    # create_database(db_name)
-    # articles = parse_all_xml_files(dir,db_name)
-    # insert_to_db(db_name, articles)
-    # get_abstract_sentences('db_name','')
+    dir = "/data/"  
+    db_name = "./pubmed.db"
+    create_database(db_name)
+    articles = parse_all_xml_files(dir,db_name)
+    insert_to_db(db_name, articles)
+    # get_abstract_sentences(db_name,'')
 
 
     
