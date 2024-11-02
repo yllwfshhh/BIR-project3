@@ -1,0 +1,15 @@
+#similar-word-container {
+    display: flex; /* Use flexbox for layout */
+    justify-content: space-between; /* Space between columns */
+    margin-top: 20px;
+}
+.similar-word-column {
+    flex: 1; /* Each column will take equal space */
+    margin-right: 20px; /* Space between columns */
+    border: 1px solid #ccc;
+    padding: 10px;
+    background-color: #f9f9f9;
+}
+.similar-word-column:last-child {
+    margin-right: 0; /* Remove margin for the last column */
+}

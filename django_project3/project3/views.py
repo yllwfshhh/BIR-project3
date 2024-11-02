@@ -7,38 +7,52 @@ from django.http import JsonResponse
 
 
 # Create your views here.
-def main_page(request):
-    top_k_words = top_k_frequency(get_all_words(),10)
+def main_page(request, word1=None, word2=None):
+
+    top_k_words = top_k_frequency(get_all_words(), 10)
+    cbow_score = None
+    sg_score = None
+    cbow_words = []
+    sg_words = []
+
+    if request.method == 'POST' and word1 and word2:
+        cbow_score, sg_score = check_similarity(word1, word2)
+        cbow_words = predict_cbow_word(word1, 10)
+        sg_words = predict_sg_word(word1, 10)
+
     context = {
-        'top_k_words' : top_k_words,
+        'top_k_words': top_k_words,
+        'cbow_score': cbow_score,  
+        'sg_score': sg_score,     
+        'cbow_words': cbow_words,  
+        'sg_words': sg_words,     
     }
-    return render(request, 'main.html',context)
-
-@csrf_exempt
-def similarity_view(request):
-    if request.method == 'POST':
-        data = json.loads(request.body)
-        word1 = data.get('word1')
-        word2 = data.get('word2')
-        similarity_score = check_similarity(word1, word2)    
-        print(similarity_score)
-        return JsonResponse({'similarity': float(similarity_score)})
-
-@csrf_exempt
-def predict_cbow_view(request):
-    if request.method == 'POST':
-        data = json.loads(request.body)
-        word1 = data.get('word1')
-        word2 = data.get('word2')
-        middle_word = predict_middle_word([word1, word2])    
-        print("Middle word:",middle_word)
-        return JsonResponse({'middle_word': middle_word})
     
+    return render(request, 'main.html', context)
+
+
 @csrf_exempt
-def predict_sg_view(request):
+def get_input(request):
+    if request.method == 'POST':
+        word1 = request.POST.get('word1')
+        word2 = request.POST.get('word2')
+        return main_page(request, word1, word2)
+    return main_page(request)
+
+    
+
+@csrf_exempt
+def similar_word_view(request):
     if request.method == 'POST':
         data = json.loads(request.body)
         word1 = data.get('word1')
-        similar_words = predict_similar_word(word1,5)   
-        print("Similar words:",similar_words)
-        return JsonResponse({'similar_word': similar_words})
+        cbow_words = predict_cbow_word(word1,10)   
+        sg_words = predict_sg_word(word1,10)
+        print(cbow_words)  
+        print(sg_words)
+       
+        return JsonResponse({
+            'cbow_words': cbow_words,
+            'sg_words':sg_words
+            })
+    

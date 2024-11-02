@@ -6,6 +6,7 @@
     <meta charset="UTF-8">
     <title>Main Page</title>
     {% load static %}
+    <link rel="stylesheet" href="{% static 'css/main.css' %}">
     
 </head>
 <body>
@@ -16,21 +17,51 @@
         {% endfor %}
     </ul>
     <h1>Similarity between two words:</h1>
-    <form id="similarity-form">
-        <label for="word1">First Word:</label>
-        <input type="text" id="word1" placeholder="Enter first word" required>
 
-        <label for="word2">Second Word:</label>
-        <input type="text" id="word2" placeholder="Enter second word" required>
-        <button id="check-similarity-button" type="button" onclick="checkSimilarity()">Check Similarity</button>
-        <button id="predict-middle-button" type="button" onclick="predictCBOW()">Predict</button>
-        <button id="predict-similar-button" type="button" onclick="predictSG()">Similar Words</button>
+
+    <form id="similarity-form" method="POST" action="{% url 'get_input' %}">
+        {% csrf_token %}
+        <label for="word1">Key Word:</label>
+        <input type="text" id="word1" name="word1" placeholder="Enter first word" required><br>
+
+        <label for="word2">Calculate the similarity with:</label>
+        <input type="text" id="word2" name="word2" placeholder="Enter second word" required>
+
+        <button id="start-button" type="submit">Show</button>
+        
+        
     </form>
 
-    <div id="similarity-score">Similarity score:</div>
-    <div id="middle-word">Middle word:</div>
-    <div id="similar-word">Similar words:</div>
+    <div id="cbow-similarity-score">CBOW similarity score:{{cbow_score}}</div>
+    <div id="sg-similarity-score">SG similarity score:{{sg_score}}</div>
+    <div id="similar-word-container">
+        <div id="cbow-similar-word" class="similar-word-column">
+            <h4>Similar Words (CBOW):</h4>
+            {% if cbow_words %}
+                <ul>
+                    {% for word in cbow_words %}
+                        <li>{{ word }}</li>
+                    {% endfor %}
+                </ul>
+            {% else %}
+                <p>No similar words found.</p>
+            {% endif %}
+        </div>
+        <div id="sg-similar-word" class="similar-word-column">
+            <h4>Similar Words (SG):</h4>
+            {% if sg_words %}
+                <ul>
+                    {% for word in sg_words %}
+                        <li>{{ word }}</li>
+                    {% endfor %}
+                </ul>
+            {% else %}
+                <p>No similar words found.</p>
+            {% endif %}
+        </div>
+    </div>
     <script src="{% static 'js/main.js' %}"></script>
+
 
 </body>
 </html>

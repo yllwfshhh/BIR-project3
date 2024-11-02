@@ -1,8 +1,11 @@
-import nltk
+
 from nltk.tokenize import sent_tokenize, word_tokenize
 from nltk.corpus import stopwords
+
 from project3.models import PubMedArticle
 from gensim.models import Word2Vec
+
+
 
 
 def get_all_sentences():
@@ -42,37 +45,34 @@ def preprocess_text(documents):
     stop_words = set(stopwords.words('english'))
     preprocessed_documents = []
     for doc in documents:
-        # Tokenize, remove punctuation, and convert to lowercase
         tokens = word_tokenize(doc)
         tokens = [word.lower() for word in tokens if word.isalpha() and word.lower() not in stop_words]
         preprocessed_documents.append(tokens)
-    return preprocessed_documents
+    return preprocessed_documents   # ['I','love','you']
 
 
 def check_similarity(word1, word2):
-
-
+    print('utils:',word1,word2)
     if word1 in CBOWmodel.wv.key_to_index and word2 in CBOWmodel.wv.key_to_index:
-        return CBOWmodel.wv.similarity(word1, word2)
-    return None
+        cbow_score = CBOWmodel.wv.similarity(word1, word2)
+        sg_score = SGmodel.wv.similarity(word1, word2)
+        print('Utils:',cbow_score,sg_score)  
+        return cbow_score, sg_score
+    return 0.0,0.0
 
-def predict_middle_word(context_words):
+def predict_cbow_word(keyword,k):
     
-    context_embeddings = [CBOWmodel.wv[word] for word in context_words if word in CBOWmodel.wv]
-    if not context_embeddings:
-        return "Context words not found in vocabulary."
-    context_vector = sum(context_embeddings) / len(context_embeddings)
-    predicted_word = CBOWmodel.wv.similar_by_vector(context_vector, topn=1)[0][0]
-    return predicted_word
+    similar_words = CBOWmodel.wv.most_similar(keyword, topn=k)
+    similar_words = [word for word, score in similar_words]
+    return similar_words
 
 
-def predict_similar_word(target_word,topn):
-        if target_word in SGmodel.wv:
-            surrounding_words = SGmodel.wv.most_similar(target_word, topn=topn)
-            surrounding_words = [word for word, _ in surrounding_words]
-            return surrounding_words
-        else:
-            return f"'{target_word}' is not in the vocabulary."
+def predict_sg_word(keyword,k):
+    similar_words = SGmodel.wv.most_similar(keyword, topn=k)
+    similar_words = [word for word, score in similar_words]
+    return similar_words
+
+
 
 CBOWmodel = Word2Vec(sentences = preprocess_text(get_all_sentences()), 
                      vector_size=100, 
