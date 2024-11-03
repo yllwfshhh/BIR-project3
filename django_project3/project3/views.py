@@ -9,6 +9,10 @@ from django.http import JsonResponse
 # Create your views here.
 def main_page(request, word1=None, word2=None):
 
+    if request.method == 'POST':
+        word1 = request.POST.get('word1', word1)
+        word2 = request.POST.get('word2', word2)
+
     top_k_words = top_k_frequency(get_all_words(), 10)
     cbow_score = None
     sg_score = None
@@ -26,18 +30,20 @@ def main_page(request, word1=None, word2=None):
         'sg_score': sg_score,     
         'cbow_words': cbow_words,  
         'sg_words': sg_words,     
+        'word1': word1,
+        'word2': word2,
     }
     
     return render(request, 'main.html', context)
 
 
-@csrf_exempt
-def get_input(request):
-    if request.method == 'POST':
-        word1 = request.POST.get('word1')
-        word2 = request.POST.get('word2')
-        return main_page(request, word1, word2)
-    return main_page(request)
+# @csrf_exempt
+# def get_input(request):
+#     if request.method == 'POST':
+#         word1 = request.POST.get('word1')
+#         word2 = request.POST.get('word2')
+#         return main_page(request, word1, word2)
+#     return main_page(request)
 
     
 
