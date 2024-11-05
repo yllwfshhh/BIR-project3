@@ -60,4 +60,4 @@ def insert_database(directory, tag):
             print(xml_file)
             parse_pubmed_xml(xml_file, tag)
 
-insert_database("../data/enterovirus","enterovirus")
+insert_database("../../data/depression","depression")

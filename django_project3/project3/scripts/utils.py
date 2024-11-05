@@ -62,19 +62,22 @@ def check_similarity(word1, word2):
     return 0.0,0.0
 
 def predict_cbow_word(keyword,k):
-    
-    similar_words = CBOWmodel.wv.most_similar(keyword, topn=k)
-    words = [word for word, score in similar_words]
-    words.insert(0,keyword)
-    plot_embeddings(words,CBOWmodel,'project3/static/img/cbow_embeddings.png')
-    return words
+    if keyword in CBOWmodel.wv:
+        similar_words = CBOWmodel.wv.most_similar(keyword, topn=k)
+        words = [word for word, score in similar_words]
+        words.insert(0,keyword)
+        plot_embeddings(words,CBOWmodel,'project3/static/img/cbow_embeddings.png')
+        return words
+    return
 
 def predict_sg_word(keyword,k):
-    similar_words = SGmodel.wv.most_similar(keyword, topn=k)
-    words = [word for word, score in similar_words]
-    words.insert(0,keyword)
-    plot_embeddings(words,SGmodel,'project3/static/img/sg_embeddings.png')
-    return words
+    if keyword in CBOWmodel.wv:
+        similar_words = SGmodel.wv.most_similar(keyword, topn=k)
+        words = [word for word, score in similar_words]
+        words.insert(0,keyword)
+        plot_embeddings(words,SGmodel,'project3/static/img/sg_embeddings.png')
+        return words
+    return
 
 def plot_embeddings(words,model,filename):
     vectors = model.wv[words]
