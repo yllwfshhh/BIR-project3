@@ -21,8 +21,8 @@ def main_page(request, word1=None, word2=None):
 
     if request.method == 'POST' and word1 and word2:
         cbow_score, sg_score = check_similarity(word1, word2)
-        cbow_words = predict_cbow_word(word1, 10)
-        sg_words = predict_sg_word(word1, 10)
+        cbow_words = predict_cbow_word(word1, 20)
+        sg_words = predict_sg_word(word1, 20)
 
     context = {
         'top_k_words': top_k_words,
@@ -47,18 +47,18 @@ def main_page(request, word1=None, word2=None):
 
     
 
-@csrf_exempt
-def similar_word_view(request):
-    if request.method == 'POST':
-        data = json.loads(request.body)
-        word1 = data.get('word1')
-        cbow_words = predict_cbow_word(word1,10)   
-        sg_words = predict_sg_word(word1,10)
-        print(cbow_words)  
-        print(sg_words)
+# @csrf_exempt
+# def similar_word_view(request):
+#     if request.method == 'POST':
+#         data = json.loads(request.body)
+#         word1 = data.get('word1')
+#         cbow_words = predict_cbow_word(word1,10)   
+#         sg_words = predict_sg_word(word1,10)
+#         print(cbow_words)  
+#         print(sg_words)
        
-        return JsonResponse({
-            'cbow_words': cbow_words,
-            'sg_words':sg_words
-            })
+#         return JsonResponse({
+#             'cbow_words': cbow_words,
+#             'sg_words':sg_words
+#             })
     

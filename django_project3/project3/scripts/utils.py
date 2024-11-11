@@ -5,7 +5,7 @@ from nltk.corpus import stopwords
 from project3.models import PubMedArticle
 from gensim.models import Word2Vec
 import matplotlib.pyplot as plt
-from sklearn.decomposition import PCA
+from sklearn.manifold import TSNE
 import numpy as np
 
 
@@ -64,6 +64,7 @@ def check_similarity(word1, word2):
 def predict_cbow_word(keyword,k):
     if keyword in CBOWmodel.wv:
         similar_words = CBOWmodel.wv.most_similar(keyword, topn=k)
+        print(k)
         words = [word for word, score in similar_words]
         words.insert(0,keyword)
         plot_embeddings(words,CBOWmodel,'project3/static/img/cbow_embeddings.png')
@@ -81,15 +82,20 @@ def predict_sg_word(keyword,k):
 
 def plot_embeddings(words,model,filename):
     vectors = model.wv[words]
-    pca = PCA(n_components=2)
-    reduced_vectors = pca.fit_transform(vectors)
+    n_samples = len(vectors)
+    perplexity = min(30, n_samples - 1)
+    tsne = TSNE(n_components=2, random_state=42, perplexity=perplexity, n_iter=1000)
+    vectors_2d = tsne.fit_transform(vectors)
+    
+
     plt.figure(figsize=(10, 8))
-    plt.scatter(reduced_vectors[:, 0], reduced_vectors[:, 1])
     for i, word in enumerate(words):
-        plt.annotate(word, (reduced_vectors[i, 0], reduced_vectors[i, 1],), fontsize=18)
-    plt.title(f"Similar words to '{words[0]}' in 2D space", fontsize=16)
-    plt.xlabel("PCA Component 1", fontsize=16)
-    plt.ylabel("PCA Component 2", fontsize=16)
+        x, y = vectors_2d[i, :]
+        plt.scatter(x, y)
+        plt.text(x+0.1, y+0.1, word, fontsize=18)
+    plt.title(f"t-SNE visualization of word vectors", fontsize=16)
+    plt.xlabel("t-SNE Dimension 1", fontsize=16)
+    plt.ylabel("t-SNE Dimension 2", fontsize=16)
     plt.grid()
     plt.savefig(filename,format='png')
 
