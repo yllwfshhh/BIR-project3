@@ -1,0 +1,28 @@
+.detail {
+    position: relative;
+    max-width: 800px;
+    margin: 20px auto;
+    background: #fff;
+    padding: 15px;
+    padding-bottom: 55px;
+    border: 1px solid #ddd;
+    border-radius: 4px;
+}
+
+button {
+    position: absolute;
+    bottom: 10px;  /* Distance from the bottom of .detail */
+    right: 10px;   /* Distance from the right of .detail */
+    padding: 10px 20px ;
+    font-size: 16px;
+    background-color: #333;
+    color: #fff;
+    border: none;
+    cursor: pointer;
+    border-radius: 8px;
+ 
+}
+
+button:hover {
+    background-color: #555;
+}

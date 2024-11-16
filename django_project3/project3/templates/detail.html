@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Main Page</title>
+    {% load static %}
+    
+    <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="{% static 'css/main.css' %}">
+    <link rel="stylesheet" href="{% static 'css/detail.css' %}">
+
+</head>
+
+<body>
+    <header class="header">
+        <nav class="navbar">   
+            <div class="nav-right">
+                <img id='logo' src="{% static 'img/logo.png' %}" >
+                <h1 class="title">IIR Details</h1>              
+            </div>
+            <div class="nav-links">
+                <a href="/index" class="home-link">Home</a>
+                <a href="/about">About</a>
+                <a href="/similarity">Similar Words</a>
+                <a href="/contact">Contact</a>
+            </div>
+        </nav>
+    </header>
+
+    
+    <div class="detail">
+
+        <h2>{{ target.title_highlighted|safe }}</h2>
+        <p style="color:#128484;"><strong>PMID:</strong> {{ target.pmid }}</p>
+        <p style="color:#128484;"><strong>Date:</strong> {{ target.pubdate }}</p>
+    
+        <p>{{ target.abstract_highlighted|safe }}</p> <!-- Display the full abstract here -->
+        <button onclick="window.history.back()">Back to Search Results</button>  
+    </div>
+    
+
+
+</body>
+
+</html>

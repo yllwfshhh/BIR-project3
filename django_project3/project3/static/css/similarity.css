@@ -1,0 +1,72 @@
+/* body{
+    display: flex;
+    flex-direction: column;
+    margin: 20px;
+    padding: 20px 150px 20px 150px; /* top right bottom left */
+    background-color: lightsteelblue;
+} */
+
+
+
+h1 {
+    font-size: 1.25rem; /* 20px */
+    font-weight: 600;   /* Semi-bold */
+}
+
+
+
+
+
+#top-frequency-container{
+
+    background-color: rgb(206, 220, 235);
+    border-radius: 15px;
+    padding: 20px 80px 20px 80px;
+    margin: 10px;
+
+}
+
+#input-container{
+    background-color: rgb(236, 243, 251);
+    border-radius: 15px;
+    padding: 20px 80px 20px 80px;
+    margin: 10px;
+    justify-content: center;     /* Center items vertically */
+    align-items: center; 
+}
+
+#similar-word-container{
+    display: flex;
+    flex-direction: row;
+    padding: 20px 80px 20px 80px;
+    background-color: rgb(206, 220, 235);
+    border-radius: 15px;
+    margin: 10px;
+    
+}
+
+#logo{
+    display: block; /* Makes the image a block element */
+    margin: 0 auto; /* Centers the image */
+    width: 100px; /* Set desired width */
+    height: auto; /* Maintain aspect ratio */
+}
+
+.title{
+    font-size: 30px;
+    text-align: center;
+}
+
+.similar-word-column {
+    flex: 1; 
+    padding: 10px; 
+}
+
+.embedding-plot{
+    margin: 10px;
+}
+
+
+.img{
+    max-width: 80%;
+}

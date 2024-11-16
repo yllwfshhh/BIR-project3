@@ -1,42 +1,44 @@
 body{
     display: flex;
     flex-direction: column;
-    margin: 20px;
-    padding: 20px 150px 20px 150px; /* top right bottom left */
+    margin: 0;
     background-color: lightsteelblue;
 }
 
-h1 {
-    font-size: 1.25rem; /* 20px */
-    font-weight: 600;   /* Semi-bold */
+
+.header {
+    height: 20vh;         /* Header takes up 1/5 of the viewport height */
+    width: 100%;          /* Full-width */
 }
 
-#top-frequency-container{
 
-    background-color: rgb(206, 220, 235);
-    border-radius: 15px;
-    padding: 20px 80px 20px 80px;
-    margin: 10px;
-
-}
-
-#input-container{
-    background-color: rgb(236, 243, 251);
-    border-radius: 15px;
-    padding: 20px 80px 20px 80px;
-    margin: 10px;
-    justify-content: center;     /* Center items vertically */
-    align-items: center; 
-}
-
-#similar-word-container{
+/* Navigation Bar Styling */
+.navbar {
     display: flex;
+    justify-content: space-between;
+    align-items: center;
+    background-color: #333;
+    padding: 0px 20px;
+}
+
+.navbar a {
+    color: #f2f2f2;
+    text-decoration: none;
+    padding: 12px 16px;
+    display: inline-block;
+}
+
+.navbar a:hover {
+    background-color: #575757;
+    border-radius: 4px;
+}
+
+.nav-right{
+    display:flex;
     flex-direction: row;
-    padding: 20px 80px 20px 80px;
-    background-color: rgb(206, 220, 235);
-    border-radius: 15px;
-    margin: 10px;
-    
+    align-items: center;
+    margin : 10px 10px  10px 20px ;
+    gap : 20px;
 }
 
 #logo{
@@ -46,21 +48,58 @@ h1 {
     height: auto; /* Maintain aspect ratio */
 }
 
-.title{
-    font-size: 30px;
-    text-align: center;
+h1 {
+    font-size: 1.25rem; /* 20px */
+    font-weight: 600;   /* Semi-bold */
+    color: #f2f2f2;;
 }
 
-.similar-word-column {
-    flex: 1; 
-    padding: 10px; 
-}
-
-.embedding-plot{
-    margin: 10px;
+h2 {
+    font-size: 1.05rem; /* 20px */
+    font-weight: 600;   /* Semi-bold */
+    color: #1A698E;
 }
 
 
-.img{
-    max-width: 80%;
+.search-bar {
+    max-width: 500px;
+    margin: 0 auto;
+    display: flex;
+}
+.search-bar input[type="text"] {
+    flex: 1;
+    padding: 10px;
+    font-size: 16px;
+    border-top-left-radius: 8px;
+    border-bottom-left-radius: 8px;
+
+}
+.search-bar button {
+    padding: 10px 20px;
+    font-size: 16px;
+    background-color: #333;
+    color: #fff;
+    border: none;
+    cursor: pointer;
+    border-top-right-radius: 8px;
+    border-bottom-right-radius: 8px;
+ 
+}
+.search-bar button:hover {
+    background-color: #555;
+}
+.results {
+    max-width: 800px;
+    margin: 20px auto;
+    padding-bottom: 45px;
+}
+.result-item {
+    background: #fff;
+    padding: 15px;
+    margin-bottom: 10px;
+    border: 1px solid #ddd;
+    border-radius: 4px;
+}
+.result-item h3 {
+    margin-top: 0;
 }

@@ -1,0 +1,111 @@
+
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Main Page</title>
+    {% load static %}
+    
+    <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="{% static 'css/main.css' %}">
+    <link rel="stylesheet" href="{% static 'css/similarity.css' %}">
+    
+   
+</head>
+
+<body>
+    <header class="header">
+        <nav class="navbar">   
+            <div class="nav-right">
+                <img id='logo' src="{% static 'img/logo.png' %}" >
+                <h1 class="title">IIR Keyword Analysis</h1>              
+            </div>
+
+            <div class="nav-links">
+                <a href="/index" class="home-link">Home</a>
+                <a href="/about">About</a>
+                <a href="/similarity">Similar Words</a>
+                <a href="/contact">Contact</a>
+            </div>
+        </nav>
+    </header>
+
+
+    <img id='logo' src="{% static 'img/logo.png' %}" >
+    <h1 class="title">IIR Keyword Analysis</h1>
+    <div id="top-frequency-container">
+        <h1 >Top 10 frequency words:</h1>
+        <ul>
+            {% for word, frequency in top_k_words %}
+            <li>{{ forloop.counter }}. {{ word }}: {{ frequency }}</li>
+            {% endfor %}
+        </ul>
+    </div>
+    
+
+
+    <div id="input-container">
+        <h1>Similarity between two words:</h1>
+        <form id="similarity-form" method="POST" >
+            {% csrf_token %}
+            <label for="word1">Key Word:</label>
+            <input type="text" id="word1" name="word1" placeholder="Enter first word" required value="{{ word1|default:'' }}"><br>
+            <label for="word2">Calculate the similarity with:</label>
+            <input type="text" id="word2" name="word2" placeholder="Enter second word" required value="{{ word2|default:'' }}">
+            <button class="bg-transparent hover:bg-blue-500 text-blue-700 font-semibold hover:text-white py-2 px-4 border border-blue-500 hover:border-transparent rounded"
+                id="start-button" type="submit"
+                >Show</button>
+
+        </form>
+        <div id="cbow-similarity-score">CBOW similarity score:{{cbow_score}}</div>
+        <div id="sg-similarity-score">SG similarity score:{{sg_score}}</div>
+    
+    </div>
+
+    <div id="similar-word-container">
+        <div id="cbow-similar-word" class="similar-word-column">
+            <h1>Similar Words (CBOW):</h1>
+            {% if cbow_words %}
+                <ul>
+                    {% for word in cbow_words %}
+                        <li>{{ forloop.counter }}. {{ word }}</li>
+                    {% endfor %}
+                </ul>
+                <div id="cbow-plot" class="embedding-plot">   
+                    <h1>t-SNE of CBOW Similar Words</h1>
+                    <img id="cbow-img" class='img' src="{% static 'img/cbow_embeddings.png' %}" alt="t-SNE Plot of Similar Words" onload="showImage()">    
+                </div>
+            {% else %}
+                <p>No similar words found.</p>
+            {% endif %}
+ 
+        </div>
+
+        <div id="sg-similar-word" class="similar-word-column">
+            <h1>Similar Words (SG):</h1>
+            {% if sg_words %}
+                <ul>
+                    {% for word in sg_words %}
+                        <li>{{ forloop.counter }}. {{ word }}</li>
+                    {% endfor %}
+                </ul>
+                <div id="sg-plot" class="embedding-plot"> 
+                    <h1>t-SNE of SG Similar Words</h1>
+                    <img id="sg-img" class='img' src="{% static 'img/sg_embeddings.png' %}" alt="t-SNE Plot of Similar Words" onload="showImage()">
+                </div> 
+            {% else %}
+                <p>No similar words found.</p>
+            {% endif %}
+
+        </div>
+ 
+    </div>
+
+    </script>
+
+    <script src="{% static 'js/similarity.js' %}"></script>
+
+
+</body>
+</html>

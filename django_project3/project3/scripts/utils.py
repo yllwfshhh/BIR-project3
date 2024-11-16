@@ -7,7 +7,8 @@ from gensim.models import Word2Vec
 import matplotlib.pyplot as plt
 from sklearn.manifold import TSNE
 import numpy as np
-
+from django.utils.safestring import mark_safe
+import re
 
 
 
@@ -31,6 +32,14 @@ def get_all_words():
         all_words.extend(word_list)
 
     return all_words
+
+
+def highlight_query(text, query):
+    if query:
+        highlighted = re.sub(f"({re.escape(query)})", r"<mark>\1</mark>", text, flags=re.IGNORECASE)
+        return mark_safe(highlighted)
+    return text
+
 
 def top_k_frequency(words,k):
     word_freq = {}
