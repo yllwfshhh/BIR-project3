@@ -9,22 +9,28 @@ from django.http import JsonResponse
 # Create your views here.
 
 def main_page(request):
+    available_years = get_available_years()
+    selected_year = request.GET.get('selected_year', None)
     query = request.GET.get('query', '')
     results = []
-    if query:
+    if query :
         results = PubMedArticle.objects.filter(
             Q(title__icontains=query) | Q(abstract__icontains=query)
             )  
+        if selected_year != "None":
+            results = results.filter(pubdate__startswith=selected_year) | results.filter(pubdate__lt=f"{selected_year}-01-01") 
+
     for result in results:
         result.title_highlighted = highlight_query(result.title, query)
         result.abstract_highlighted = highlight_query(result.abstract, query)   
-        title_count = len(re.findall(re.escape(query), result.title, re.IGNORECASE))
-        abstract_count = len(re.findall(re.escape(query), result.abstract, re.IGNORECASE))
-        result.keyword_count = title_count + abstract_count
-    results = sorted(results, key=lambda x: x.keyword_count, reverse=True)
+        result.keyword = keyword_count(result,query) 
+
+    results = sorted(results, key=lambda x: x.keyword, reverse=True)
 
     return render(request, 'main.html', {'query': query, 
                                          'results': results,
+                                         'available_years': available_years,
+                                         'selected_year': selected_year,
                                          'results_count': len(results)
                                          })
 
@@ -33,8 +39,19 @@ def detail_page(request, id):
     target = get_object_or_404(PubMedArticle, id=id)
     target.title_highlighted = highlight_query(target.title, query)
     target.abstract_highlighted = highlight_query(target.abstract, query)
+    target.keyword_count = keyword_count(target, query)
+    count_sentences, count_words, count_characters, count_ascii, count_non_ascii = statistic_count(target.abstract)
+    context = {
+                'target': target,
+                'query': query,
+                'count_sentences': count_sentences,
+                'count_words': count_words,
+                'count_characters': count_characters,
+                'count_ascii': count_ascii,
+                'count_non_ascii': count_non_ascii,
+    }
 
-    return render(request, 'detail.html', {'target': target, 'query': query})
+    return render(request, 'detail.html', context)
 
 
 def similarity_page(request, word1=None, word2=None):

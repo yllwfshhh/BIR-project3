@@ -9,6 +9,18 @@
     border-radius: 4px;
 }
 
+.detail-statistic{
+    color: #384b46;
+    font-size: 0.9rem;
+    font-weight: 350;
+}
+
+.detail-statistic h3{
+    font-size: 1.0rem;
+    font-weight: 500;
+
+}
+
 button {
     position: absolute;
     bottom: 10px;  /* Distance from the bottom of .detail */

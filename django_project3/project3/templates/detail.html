@@ -33,8 +33,20 @@
         <h2>{{ target.title_highlighted|safe }}</h2>
         <p style="color:#128484;"><strong>PMID:</strong> {{ target.pmid }}</p>
         <p style="color:#128484;"><strong>Date:</strong> {{ target.pubdate }}</p>
-    
         <p>{{ target.abstract_highlighted|safe }}</p> <!-- Display the full abstract here -->
+        <br>
+        
+        <div class="detail-statistic">
+            <h3>Statistics</h3>
+            <p>Keyword Count: {{ target.keyword_count }}</p>
+            <p>Sentences: {{ count_sentences }}</p>
+            <p>Words: {{ count_words }}</p>
+            <p>Characters: {{ count_characters }}</p>
+            <p>ASCII Characters: {{ count_ascii }}</p>
+            <p>Non-ASCII Characters:{{ count_non_ascii }}</p>
+        </div>
+
+
         <button onclick="window.history.back()">Back to Search Results</button>  
     </div>
     

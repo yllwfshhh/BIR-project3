@@ -1,7 +1,6 @@
 
 from nltk.tokenize import sent_tokenize, word_tokenize
 from nltk.corpus import stopwords
-
 from project3.models import PubMedArticle
 from gensim.models import Word2Vec
 import matplotlib.pyplot as plt
@@ -11,7 +10,7 @@ from django.utils.safestring import mark_safe
 import re
 
 
-
+## base
 def get_all_sentences():
     # Retrieve all abstracts from the database
     abstracts = PubMedArticle.objects.values_list('abstract', flat=True)  # Get all abstracts
@@ -33,14 +32,40 @@ def get_all_words():
 
     return all_words
 
-
 def highlight_query(text, query):
     if query:
         highlighted = re.sub(f"({re.escape(query)})", r"<mark>\1</mark>", text, flags=re.IGNORECASE)
         return mark_safe(highlighted)
     return text
 
+## project1
+def keyword_count(target,query):
+    title_count = len(re.findall(re.escape(query), target.title, re.IGNORECASE))
+    abstract_count = len(re.findall(re.escape(query), target.abstract, re.IGNORECASE))
+    return title_count + abstract_count
 
+def statistic_count(text):
+    count_sentences = len(sent_tokenize(text))
+    count_words = len(text.split())
+    count_characters = len(text)
+    count_ascii = 0
+    for char in text:
+        if ord(char) < 128:
+            count_ascii += 1
+    count_non_ascii = len(text)-count_ascii
+    
+    return count_sentences, count_words, count_characters, count_ascii, count_non_ascii
+
+def get_available_years():
+    years = PubMedArticle.objects.values('pubdate').distinct()
+    unique_years = set()
+    for each in years:
+        year = str(each['pubdate'])[:4]
+        if year[0] == '2' :
+            unique_years.add(year)
+    return sorted(unique_years)
+
+## project2
 def top_k_frequency(words,k):
     word_freq = {}
     for word in words:
@@ -62,7 +87,7 @@ def preprocess_text(documents):
         preprocessed_documents.append(tokens)
     return preprocessed_documents   # ['I','love','you']
 
-
+## project3
 def check_similarity(word1, word2):
     if word1 in CBOWmodel.wv.key_to_index and word2 in CBOWmodel.wv.key_to_index:
         cbow_score = CBOWmodel.wv.similarity(word1, word2)

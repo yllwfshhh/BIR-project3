@@ -31,11 +31,8 @@
         </nav>
     </header>
 
-
-    <img id='logo' src="{% static 'img/logo.png' %}" >
-    <h1 class="title">IIR Keyword Analysis</h1>
     <div id="top-frequency-container">
-        <h1 >Top 10 frequency words:</h1>
+        <h2>Top 10 frequency words:</h2>
         <ul>
             {% for word, frequency in top_k_words %}
             <li>{{ forloop.counter }}. {{ word }}: {{ frequency }}</li>
@@ -46,7 +43,7 @@
 
 
     <div id="input-container">
-        <h1>Similarity between two words:</h1>
+        <h2>Similarity between two words:</h2>
         <form id="similarity-form" method="POST" >
             {% csrf_token %}
             <label for="word1">Key Word:</label>
@@ -65,7 +62,7 @@
 
     <div id="similar-word-container">
         <div id="cbow-similar-word" class="similar-word-column">
-            <h1>Similar Words (CBOW):</h1>
+            <h2>Similar Words (CBOW):</h2>
             {% if cbow_words %}
                 <ul>
                     {% for word in cbow_words %}
@@ -83,7 +80,7 @@
         </div>
 
         <div id="sg-similar-word" class="similar-word-column">
-            <h1>Similar Words (SG):</h1>
+            <h2>Similar Words (SG):</h2>
             {% if sg_words %}
                 <ul>
                     {% for word in sg_words %}
@@ -91,7 +88,7 @@
                     {% endfor %}
                 </ul>
                 <div id="sg-plot" class="embedding-plot"> 
-                    <h1>t-SNE of SG Similar Words</h1>
+                    <h2>t-SNE of SG Similar Words</h2>
                     <img id="sg-img" class='img' src="{% static 'img/sg_embeddings.png' %}" alt="t-SNE Plot of Similar Words" onload="showImage()">
                 </div> 
             {% else %}
