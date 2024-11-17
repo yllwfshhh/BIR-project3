@@ -103,3 +103,23 @@ h2 {
 .result-item h3 {
     margin-top: 0;
 }
+
+.suggestions-list {
+    display: flex;           /* Flexbox to align items horizontally */
+    justify-content: center; /* Align items to the left */
+    flex-wrap: wrap;         /* Allow wrapping if the items overflow */
+    margin-top: 8px;         /* Space between search bar and suggestions */
+    padding: 0;
+        
+}
+
+.suggestion-item {
+    padding: 8px 12px;
+    margin: 0 4px;
+    cursor: pointer;
+    border-radius: 4px;
+}
+
+.suggestion-item:hover {
+    background-color: #cce7ff;
+}

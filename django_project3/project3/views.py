@@ -12,6 +12,8 @@ def main_page(request):
     available_years = get_available_years()
     selected_year = request.GET.get('selected_year', None)
     query = request.GET.get('query', '')
+    suggestions = suggest_corrections(query,set(get_all_words()))
+
     results = []
     if query :
         results = PubMedArticle.objects.filter(
@@ -28,6 +30,7 @@ def main_page(request):
     results = sorted(results, key=lambda x: x.keyword, reverse=True)
 
     return render(request, 'main.html', {'query': query, 
+                                         'suggestions': suggestions,
                                          'results': results,
                                          'available_years': available_years,
                                          'selected_year': selected_year,

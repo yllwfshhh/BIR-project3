@@ -28,7 +28,8 @@
     </header>
 
     <form class="search-bar" action="{% url 'main_page' %}" method="get">
-        <input type="text" name="query" placeholder="Search..." value="{{ query }}">
+        <input id="search-placeholder"type="text" name="query" placeholder="Search..." value="{{ query }}">
+
         <select name="selected_year" id="year">
             <option value="None"></option>
             {% for year in available_years %}
@@ -36,7 +37,18 @@
             {% endfor %}
         </select>
         <button type="submit">Search</button>
+        <br>
+
     </form>
+    {% if query %}
+    <div id="suggestions-list" class="suggestions-list">
+        {% for suggestion in suggestions %}
+            <div class="suggestion-item" onclick="selectSuggestion('{{ suggestion }}')">{{ suggestion }}</div>
+        {% empty %}
+            <div class="suggestion-item">No suggestions</div>
+        {% endfor %}
+    </div>
+    {% endif %}
 
 
     <div class="results">
@@ -61,7 +73,7 @@
         {% endif %}
     </div>
 
-
+<script src="{% static 'js/main.js' %}"></script>
 </body>
 
 </html>

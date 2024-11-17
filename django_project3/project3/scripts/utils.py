@@ -8,6 +8,7 @@ from sklearn.manifold import TSNE
 import numpy as np
 from django.utils.safestring import mark_safe
 import re
+import Levenshtein
 
 
 ## base
@@ -76,6 +77,15 @@ def top_k_frequency(words,k):
     sorted_word_freq = sorted(word_freq.items(), key=lambda x: x[1], reverse=True)
     
     return sorted_word_freq[:k]
+
+def suggest_corrections(query, candidates):
+    suggestions = []
+    for candidate in candidates:
+        distance = Levenshtein.distance(query.lower(), candidate.lower())
+        suggestions.append((candidate, distance))
+    
+    suggestions.sort(key=lambda x: x[1])
+    return [s[0] for s in suggestions[:5]] 
 
 # Preprocess the text data
 def preprocess_text(documents):
