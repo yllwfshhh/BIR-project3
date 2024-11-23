@@ -53,11 +53,14 @@ def extract_pubdate(root):
     return pubdate
 
 def insert_database(directory, tag):
-    
+    count = 0
     for filename in os.listdir(directory):
+        if count == 500:
+            break
         if filename.endswith(".xml"):
             xml_file = os.path.join(directory, filename)
             print(xml_file)
             parse_pubmed_xml(xml_file, tag)
-
+            count += 1
+            
 insert_database("../../data/depression","depression")
