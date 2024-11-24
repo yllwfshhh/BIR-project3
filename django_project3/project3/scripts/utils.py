@@ -154,3 +154,54 @@ SGmodel = Word2Vec(sentences=preprocess_text(get_all_sentences()),
                      window=2, 
                      min_count=1, 
                      sg=1)
+
+## project4
+import numpy as np
+from sklearn.feature_extraction.text import TfidfVectorizer
+from sklearn.metrics.pairwise import cosine_similarity
+
+def rank_abstract(query,abstracts):
+    # Step 1: Compute TF-IDF scores
+    all_text = [query] + abstracts
+    vectorizer = TfidfVectorizer()
+    tfidf_matrix = vectorizer.fit_transform(all_text)
+    query_vector = tfidf_matrix[0]  # First row corresponds to the query
+    abstract_vectors = tfidf_matrix[1:] 
+
+    # Step 2: Compute cosine similarity
+    similarity_scores = cosine_similarity(query_vector, abstract_vectors).flatten()
+
+    # Step 3: Rank abstracts by similarity to query
+    ranked_indices = similarity_scores.argsort()[::-1]
+    ranked_abstracts = [(abstracts[i], similarity_scores[i]) for i in ranked_indices if similarity_scores[i] > 0.05]
+    
+
+    # print("Ranked Abstracts and Sentences:")
+    # for idx, (abstract, score) in enumerate(ranked_abstracts):
+    #     print(f"\nAbstract (Score: {score:.4f}): {abstract}")
+    #     # Split abstract into sentences
+    #     sentences = sent_tokenize(abstract)
+    #     # Compute weighted CBOW for sentences
+    #     for i, sentence in enumerate(sentences):
+    #         sentence_vector = compute_weighted_cbow(sentence, tfidf_weights[idx + 1], tfidf_feature_names, CBOWmodel)
+    #         sentence_score = cosine_similarity([query_vector], [sentence_vector]).flatten()[0]
+    #         print(f"  Sentence {i + 1}: {sentence} (Score: {sentence_score:.4f})")    
+
+    return ranked_abstracts
+
+# Function to compute weighted CBOW
+def compute_weighted_cbow(text, tfidf_weights, feature_names, model):
+    words = text.lower().split()
+    weighted_embeddings = []
+    
+    for word in words:
+        if word in model.wv and word in feature_names:
+            # Get TF-IDF weight
+            word_index = np.where(feature_names == word)[0]
+            if word_index.size > 0:
+                weight = tfidf_weights[word_index[0]]
+                weighted_embeddings.append(model.wv[word] * weight)
+    
+    if not weighted_embeddings:
+        return np.zeros(model.vector_size)  # Return zero vector if no valid words
+    return np.mean(weighted_embeddings, axis=0)
