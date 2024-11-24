@@ -20,60 +20,35 @@
             </div>
             <div class="nav-links">
                 <a href="/index" class="home-link">Home</a>
-                <a href="/query">About</a>
+                <a href="/query">Query</a>
                 <a href="/similarity">Similar Words</a>
                 <a href="/contact">Contact</a>
             </div>
         </nav>
     </header>
 
-    <form class="search-bar" action="{% url 'main_page' %}" method="get">
+    <form class="search-bar" action="{% url 'query_page' %}" method="get">
         <input id="search-placeholder"type="text" name="query" placeholder="Search..." value="{{ query }}">
-
-        <select name="selected_year" id="year">
-            <option value="None"></option>
-            {% for year in available_years %}
-            <option value="{{ year }}" {% if year == selected_year %}selected{% endif %}>{{ year }}</option>
-            {% endfor %}
-        </select>
         <button type="submit">Search</button>
         <br>
-
     </form>
-    {% if query %}
-    <div id="suggestions-list" class="suggestions-list">
-        {% for suggestion in suggestions %}
-            <div class="suggestion-item" onclick="selectSuggestion('{{ suggestion }}')">{{ suggestion }}</div>
-        {% empty %}
-            <div class="suggestion-item">No suggestions</div>
-        {% endfor %}
-    </div>
-    {% endif %}
-
 
     <div class="results">
-        {% if query %}
-            <p style="color: #757575;font-size: 1rem;font-weight: 400;">{{ results_count }} result(s) found.</p>
-            {% if results %}
-                {% for result in results %}
+            {% if ranked_abstracts %}
+                <p style="color: #757575;font-size: 1rem;font-weight: 400;">{{ results_count }} result(s) found.</p>
+                {% for abstract, score in ranked_abstracts %}
                     <div class="result-item">
-                        <a href="{% url 'detail_page' result.id %}?query={{ query }}" class="result-link">
-                            <h2>Title : {{ result.title_highlighted|safe }}</h2>
-                            <p style="color:#128484;">PMID : {{ result.pmid }}</p>
-                            <p style="color:#128484;">Date : {{ result.pubdate }}</p>
-                            <p>{{ result.abstract_highlighted|truncatewords:20 }}</p>
-                            <p style="color: #384b46;font-size: 0.9rem;font-weight: 700;">Keyword Count: {{ result.keyword }}</p>
-
+                        <a href="{% url 'rank_sentence_page' result.id %}?query={{ query }}" class="result-link"></a>
+                            <h2>Score : {{ score }}</h2>
+                            <p>{{ abstract }}</p>
                         </a>
                     </div>
                 {% endfor %}
             {% else %}
                 <p>No results found.</p>
             {% endif %}
-        {% endif %}
     </div>
 
-<script src="{% static 'js/main.js' %}"></script>
 </body>
 
 </html>
