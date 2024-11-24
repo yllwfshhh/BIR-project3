@@ -56,7 +56,6 @@ def detail_page(request, id):
 
     return render(request, 'detail.html', context)
 
-
 def similarity_page(request, word1=None, word2=None):
 
     if request.method == 'POST':
@@ -85,3 +84,33 @@ def similarity_page(request, word1=None, word2=None):
     }
     
     return render(request, 'similarity.html', context)
+
+def query_page(request):
+    query = request.GET.get('query', '')
+    print(query)
+    all_pubmed = PubMedArticle.objects.all()
+    all_abstracts = [each.abstract for each in all_pubmed]
+    ranked_abstracts = ""
+    if query:
+        ranked_abstracts = rank_abstract(query, all_abstracts)
+    context = {
+                'ranked_abstracts': ranked_abstracts,
+                'results_count': len(ranked_abstracts)
+    }
+    return render(request, 'query.html',context)
+
+def rank_sentence_page(request, id):
+    query = request.GET.get('query', '')
+    target = get_object_or_404(PubMedArticle, id=id)
+    count_sentences, count_words, count_characters, count_ascii, count_non_ascii = statistic_count(target.abstract)
+    context = {
+                'target': target,
+                'query': query,
+                'count_sentences': count_sentences,
+                'count_words': count_words,
+                'count_characters': count_characters,
+                'count_ascii': count_ascii,
+                'count_non_ascii': count_non_ascii,
+    }
+
+    return render(request, 'detail.html', context)
