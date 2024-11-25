@@ -34,13 +34,14 @@
     </form>
 
     <div class="results">
-            {% if ranked_abstracts %}
+            {% if results %}
                 <p style="color: #757575;font-size: 1rem;font-weight: 400;">{{ results_count }} result(s) found.</p>
-                {% for abstract, score in ranked_abstracts %}
+                {% for result in results %}
                     <div class="result-item">
-                        <a href="{% url 'rank_sentence_page' result.id %}?query={{ query }}" class="result-link"></a>
-                            <h2>Score : {{ score }}</h2>
-                            <p>{{ abstract }}</p>
+                        <a href="{% url 'rank_sentence_page' result.id %}?query={{ query }}" class="result-link">
+                            <h2>Title : {{ result.title}}</h2>
+                            <p style="color:#128484;"><strong>{{ Score : result.score }}</strong></p>
+                            <p>{{ result.abstract|truncatewords:20 }}</p>
                         </a>
                     </div>
                 {% endfor %}

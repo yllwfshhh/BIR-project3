@@ -20,7 +20,7 @@
             </div>
             <div class="nav-links">
                 <a href="/index" class="home-link">Home</a>
-                <a href="/query">About</a>
+                <a href="/query">Query</a>
                 <a href="/similarity">Similar Words</a>
                 <a href="/contact">Contact</a>
             </div>
@@ -63,7 +63,6 @@
                             <p style="color:#128484;">Date : {{ result.pubdate }}</p>
                             <p>{{ result.abstract_highlighted|truncatewords:20 }}</p>
                             <p style="color: #384b46;font-size: 0.9rem;font-weight: 700;">Keyword Count: {{ result.keyword }}</p>
-
                         </a>
                     </div>
                 {% endfor %}

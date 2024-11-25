@@ -38,20 +38,12 @@ def main_page(request):
                                          })
 
 def detail_page(request, id):
-    query = request.GET.get('query', '')
-    target = get_object_or_404(PubMedArticle, id=id)
-    target.title_highlighted = highlight_query(target.title, query)
-    target.abstract_highlighted = highlight_query(target.abstract, query)
-    target.keyword_count = keyword_count(target, query)
-    count_sentences, count_words, count_characters, count_ascii, count_non_ascii = statistic_count(target.abstract)
+    query = request.GET.get('query', '') # Get the query parameter from the URL
+    target = get_object_or_404(PubMedArticle, id=id) # Get the id parameter from the URL
+
     context = {
                 'target': target,
-                'query': query,
-                'count_sentences': count_sentences,
-                'count_words': count_words,
-                'count_characters': count_characters,
-                'count_ascii': count_ascii,
-                'count_non_ascii': count_non_ascii,
+                'query': query
     }
 
     return render(request, 'detail.html', context)
@@ -93,7 +85,23 @@ def query_page(request):
     ranked_abstracts = ""
     if query:
         ranked_abstracts = rank_abstract(query, all_abstracts)
-    context = {
+    # for abstract,score in ranked_abstracts:
+    #     print(score,"----",abstract[:50])
+
+    results = []
+    for abstract, score in ranked_abstracts:
+       target = PubMedArticle.objects.filter(abstract=abstract).first()  
+       if target: 
+            # Add the article details and the score to the results list
+            results.append({
+                'id': target.id,
+                'pmid': target.pmid,
+                'title': target.title,
+                'abstract': target.abstract,
+                'score': score
+            })
+    
+    context = { 'results': results,
                 'ranked_abstracts': ranked_abstracts,
                 'results_count': len(ranked_abstracts)
     }
@@ -113,4 +121,4 @@ def rank_sentence_page(request, id):
                 'count_non_ascii': count_non_ascii,
     }
 
-    return render(request, 'detail.html', context)
+    return render(request, 'rank_sentence.html', context)
