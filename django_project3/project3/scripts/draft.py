@@ -10,7 +10,7 @@ import os
 import sys
 print(sys.path)
 import django
-sys.path.append('/home/BIR-project3/django_project3')  # Use the absolute path to `django_project3`
+sys.path.append('/home/project3/django_project3')  # Use the absolute path to `django_project3`
 os.environ.setdefault('DJANGO_SETTINGS_MODULE', 'django_project3.settings')
 django.setup()
 from project3.models import PubMedArticle
@@ -76,27 +76,29 @@ CBOWmodel = Word2Vec(sentences = preprocess_text(get_all_sentences()),
 
 
 # Step1: TFIDF
-abstract_sentences = sent_tokenize(abstracts[1])
+abstract_sentences = sent_tokenize(abstracts[0])
 tfidf_vectorizer = TfidfVectorizer(stop_words=None)
-tfidf_matrix = vectorizer.fit_transform(abstract_sentences)
-query_tfidf = vectorizer.transform([query])
-
+tfidf_matrix = tfidf_vectorizer.fit_transform(abstract_sentences)
+query_tfidf = tfidf_vectorizer.transform([query])
+print("query tfidf:",query_tfidf)
+print("sentences_tfid:",tfidf_matrix)
 # Step2: CBOW
 
 
-# def get_word_embedding(word):
-#     # Return the word embedding for a given word from the GloVe model
-#     return CBOWmodel.get(word, np.zeros(100)) 
+def get_word_embedding(word):
+    if word in CBOWmodel.wv:
+        return CBOWmodel.wv[word]
+    else:
+        return np.zeros(100)
 
-# def get_sentence_embedding(sentence):
-    
-#     words = sentence.lower().split()
-#     sentence_embedding_sum = np.sum([get_word_embedding(word, CBOWmodel) for word in words], axis=0)
-#     sentence_embedding_mean = sentence_embedding_sum / len(words) if len(words) > 0 else np.zeros(100)  # Avoid division by zero
-#     return sentence_embedding_mean
+def get_sentence_embedding(sentence):
+    words = sentence.lower().split()
+    sentence_embedding_sum = np.sum([get_word_embedding(word) for word in words], axis=0)
+    sentence_embedding_mean = sentence_embedding_sum / len(words) if len(words) > 0 else np.zeros(100)  # Avoid division by zero
+    return sentence_embedding_mean
 
-# query_cbow = get_sentence_embedding(query)
-# sentence_cbow_vectors = [get_sentence_embedding(sentence) for sentence in abstract_sentences]
+query_cbow = get_sentence_embedding(query)
+sentence_cbow_vectors = [get_sentence_embedding(sentence) for sentence in abstract_sentences]
 
 
 # Step 3: Calculate relevance scores

@@ -8,6 +8,7 @@
     <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
     <link rel="stylesheet" href="{% static 'css/main.css' %}">
     <link rel="stylesheet" href="{% static 'css/detail.css' %}">
+    <link rel="stylesheet" href="{% static 'css/rank_sentence.css' %}">
 
 </head>
 
@@ -37,12 +38,39 @@
         <br>
         
         <div class="detail-rank-sentence">
-            <p style="color:#128484;"><strong>Ranked Sentences:</strong></p>
+           
+            <p style="color:#128484; cursor: pointer;" onclick="toggleSlide()">
+                <strong>Ranked Sentences:</strong>
+                <span id="collapse-toggle">[+]</span>
+            </p>
+            <ol id="ranked-sentences-list" class="collapsed">
+                {% for sentence, score in ranked_sentences %}
+                    <li>
+                        <strong>Score:</strong> {{ score|floatformat:4 }}<br>
+                        <p>{{ sentence }}</p>
+                    </li>
+                {% endfor %}
+            </ol>
+            
         </div>
-
-
         <button onclick="window.history.back()">Back to Search Results</button>  
     </div>
+    <script>
+        function toggleSlide() {
+            const list = document.getElementById("ranked-sentences-list");
+            const toggle = document.getElementById("collapse-toggle");
+            if (list.classList.contains("collapsed")) {
+                list.classList.remove("collapsed");
+                list.classList.add("expanded");
+                toggle.textContent = "[-]"; // Update toggle text to collapse
+            } else {
+                list.classList.remove("expanded");
+                list.classList.add("collapsed");
+                toggle.textContent = "[+]"; // Update toggle text to expand
+            }
+        }
+    </script>
+
     
 
 

@@ -1,0 +1,18 @@
+#ranked-sentences-list {
+    list-style-type: decimal;
+    max-height: 0;
+    overflow: hidden;
+    transition: max-height 0.3s ease-out; /* Smooth transition for height */
+    padding-left: 20px;
+    margin: 0;
+}
+
+#ranked-sentences-list.expanded {
+    max-height: 1000px; /* Large enough to fit the content */
+}
+
+#ranked-sentences-list.collapsed {
+    max-height: 0;
+}
+
+

@@ -174,34 +174,40 @@ def rank_abstract(query,abstracts):
     # Step 3: Rank abstracts by similarity to query
     ranked_indices = similarity_scores.argsort()[::-1]
     ranked_abstracts = [(abstracts[i], similarity_scores[i]) for i in ranked_indices if similarity_scores[i] > 0.05]
-    
-
-    # print("Ranked Abstracts and Sentences:")
-    # for idx, (abstract, score) in enumerate(ranked_abstracts):
-    #     print(f"\nAbstract (Score: {score:.4f}): {abstract}")
-    #     # Split abstract into sentences
-    #     sentences = sent_tokenize(abstract)
-    #     # Compute weighted CBOW for sentences
-    #     for i, sentence in enumerate(sentences):
-    #         sentence_vector = compute_weighted_cbow(sentence, tfidf_weights[idx + 1], tfidf_feature_names, CBOWmodel)
-    #         sentence_score = cosine_similarity([query_vector], [sentence_vector]).flatten()[0]
-    #         print(f"  Sentence {i + 1}: {sentence} (Score: {sentence_score:.4f})")    
-
     return ranked_abstracts
 
-# Function to compute weighted CBOW
-def compute_weighted_cbow(text, tfidf_weights, feature_names, model):
-    words = text.lower().split()
-    weighted_embeddings = []
+
+def rank_sentence(query, abstract):
+    print(query)
+    # Step 1: Compute TF-IDF scores
+    abstract_sentences = sent_tokenize(abstract)
+    vectorizer = TfidfVectorizer(stop_words=None)
+    sentences_tfidf = vectorizer.fit_transform(abstract_sentences)
+    query_tfidf = vectorizer.transform([query])
+ 
+    # Step 2: Compute CBOW scores
+    query_cbow = cbow_sentence_embedding(query)
+    sentences_cbow = [cbow_sentence_embedding(sentence) for sentence in abstract_sentences]
+
+    # Step 3: Calculate relevance scores
+    tfidf_scores = cosine_similarity(query_tfidf, sentences_tfidf).flatten()
+    cbow_scores = [cosine_similarity([query_cbow], [sent_vec]).flatten()[0] for sent_vec in sentences_cbow]
+
+    # Step 4: Rank
+    alpha = 0.7  # Adjust to prioritize TF-IDF or CBOW
+    final_scores = alpha * tfidf_scores + (1 - alpha) * np.array(cbow_scores)
+    ranked_sentences = sorted(zip(abstract_sentences, final_scores), key=lambda x: x[1], reverse=True)
+
+    return ranked_sentences
+
+def cbow_word_embedding(word):
+    if word in CBOWmodel.wv:
+        return CBOWmodel.wv[word]
+    else:
+        return np.zeros(100)
     
-    for word in words:
-        if word in model.wv and word in feature_names:
-            # Get TF-IDF weight
-            word_index = np.where(feature_names == word)[0]
-            if word_index.size > 0:
-                weight = tfidf_weights[word_index[0]]
-                weighted_embeddings.append(model.wv[word] * weight)
-    
-    if not weighted_embeddings:
-        return np.zeros(model.vector_size)  # Return zero vector if no valid words
-    return np.mean(weighted_embeddings, axis=0)
+def cbow_sentence_embedding(sentence):
+    words = sentence.lower().split()
+    sentence_embedding_sum = np.sum([cbow_word_embedding(word) for word in words], axis=0)
+    sentence_embedding_mean = sentence_embedding_sum / len(words) if len(words) > 0 else np.zeros(100)  # Avoid division by zero
+    return sentence_embedding_mean

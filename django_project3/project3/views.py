@@ -101,7 +101,8 @@ def query_page(request):
                 'score': score
             })
     
-    context = { 'results': results,
+    context = { 'query': query,
+                'results': results,
                 'ranked_abstracts': ranked_abstracts,
                 'results_count': len(ranked_abstracts)
     }
@@ -110,15 +111,10 @@ def query_page(request):
 def rank_sentence_page(request, id):
     query = request.GET.get('query', '')
     target = get_object_or_404(PubMedArticle, id=id)
-    count_sentences, count_words, count_characters, count_ascii, count_non_ascii = statistic_count(target.abstract)
+    results = rank_sentence(query,target.abstract)
     context = {
                 'target': target,
-                'query': query,
-                'count_sentences': count_sentences,
-                'count_words': count_words,
-                'count_characters': count_characters,
-                'count_ascii': count_ascii,
-                'count_non_ascii': count_non_ascii,
+                'ranked_sentences': results[:5]
     }
 
     return render(request, 'rank_sentence.html', context)
